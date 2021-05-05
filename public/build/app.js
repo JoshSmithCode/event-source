@@ -4498,7 +4498,7 @@ var $elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
 };
 var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
-var $author$project$Main$initialModel = {createEventData: $elm$core$Dict$empty, createEventUser: $elm$core$Maybe$Nothing, createUser: '', editingUser: $elm$core$Maybe$Nothing, editingUserData: $elm$core$Array$empty, expanded: $elm$core$Set$empty, position: 0, userEvents: $elm$core$Array$empty};
+var $author$project$Model$initialModel = {createEventData: $elm$core$Dict$empty, createEventUser: $elm$core$Maybe$Nothing, createUser: '', editingUser: $elm$core$Maybe$Nothing, editingUserData: $elm$core$Array$empty, events: $elm$core$Array$empty, expanded: $elm$core$Set$empty, position: 0};
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5209,10 +5209,10 @@ var $elm$browser$Browser$sandbox = function (impl) {
 			view: impl.view
 		});
 };
-var $author$project$Main$CreateUser = function (a) {
+var $author$project$Event$CreateUser = function (a) {
 	return {$: 'CreateUser', a: a};
 };
-var $author$project$Main$UpdateUser = F2(
+var $author$project$Event$UpdateUser = F2(
 	function (a, b) {
 		return {$: 'UpdateUser', a: a, b: b};
 	});
@@ -5902,6 +5902,96 @@ var $elm$core$Set$remove = F2(
 		return $elm$core$Set$Set_elm_builtin(
 			A2($elm$core$Dict$remove, key, dict));
 	});
+var $elm$json$Json$Decode$array = _Json_decodeArray;
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $author$project$Event$AssignTask = F2(
+	function (a, b) {
+		return {$: 'AssignTask', a: a, b: b};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $author$project$Event$assignTaskDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'AssignTask',
+	A3(
+		$elm$json$Json$Decode$map2,
+		$author$project$Event$AssignTask,
+		A2($elm$json$Json$Decode$field, 'taskId', $elm$json$Json$Decode$int),
+		A2($elm$json$Json$Decode$field, 'userId', $elm$json$Json$Decode$int)));
+var $author$project$Event$CompleteTask = function (a) {
+	return {$: 'CompleteTask', a: a};
+};
+var $author$project$Event$completeTaskDecoder = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$Event$CompleteTask,
+	A2($elm$json$Json$Decode$field, 'CompleteTask', $elm$json$Json$Decode$int));
+var $author$project$Event$CreateTask = function (a) {
+	return {$: 'CreateTask', a: a};
+};
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$Event$createTaskDecoder = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$Event$CreateTask,
+	A2($elm$json$Json$Decode$field, 'CreateTask', $elm$json$Json$Decode$string));
+var $author$project$Event$createUserDecoder = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$Event$CreateUser,
+	A2($elm$json$Json$Decode$field, 'CreateUser', $elm$json$Json$Decode$string));
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $author$project$Event$UpdateTaskDescription = F2(
+	function (a, b) {
+		return {$: 'UpdateTaskDescription', a: a, b: b};
+	});
+var $author$project$Event$updateTaskDescriptionDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'UpdateTaskDescription',
+	A3(
+		$elm$json$Json$Decode$map2,
+		$author$project$Event$UpdateTaskDescription,
+		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
+		A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string)));
+var $elm$json$Json$Decode$keyValuePairs = _Json_decodeKeyValuePairs;
+var $elm$json$Json$Decode$dict = function (decoder) {
+	return A2(
+		$elm$json$Json$Decode$map,
+		$elm$core$Dict$fromList,
+		$elm$json$Json$Decode$keyValuePairs(decoder));
+};
+var $author$project$Event$updateUserDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'UpdateUser',
+	A3(
+		$elm$json$Json$Decode$map2,
+		$author$project$Event$UpdateUser,
+		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
+		A2(
+			$elm$json$Json$Decode$field,
+			'fields',
+			$elm$json$Json$Decode$dict($elm$json$Json$Decode$string))));
+var $author$project$Event$decoder = $elm$json$Json$Decode$oneOf(
+	_List_fromArray(
+		[$author$project$Event$createUserDecoder, $author$project$Event$updateUserDecoder, $author$project$Event$createTaskDecoder, $author$project$Event$updateTaskDescriptionDecoder, $author$project$Event$assignTaskDecoder, $author$project$Event$completeTaskDecoder]));
+var $elm$core$Debug$todo = _Debug_todo;
+var $author$project$Event$seedEvents = function () {
+	var data = '[{"CreateUser":"Josh Smith"},{"UpdateUser":{"id":0,"fields":{"name":"Joshua Smith","email":"josh@test.dev"}}},{"CreateUser":"Jessica Cooper"},{"CreateUser":"Tom Foolery"},{"CreateUser":"Harry"},{"UpdateUser":{"id":4,"fields":{"name":"Harry Lowe","email":"harry@dev.io"}}},{"UpdateUser":{"id":3,"fields":{"email":"tom@haha.lol"}}},{"UpdateUser":{"id":2,"fields":{"email":"jessica@employee.dev"}}},{"CreateTask":"Create login page"},{"CreateTask":"Tom and Bob reunion party"},{"CreateTask":"Buy fancier pants"},{"AssignTask":{"taskId":8,"userId":4}},{"AssignTask":{"taskId":3,"userId":10}},{"UpdateTaskDescription":{"id":9,"description":"Bob has agreed that no eyes will be consumed as long as the doors are opened."}},{"CompleteTask":10},{"CreateTask":"Chiron Beta Prime zoom conference"},{"UpdateTaskDescription":{"id":3,"description":"Don\'t forget to send them their xmas hamper 9-10 months in advance"}},{"AssignTask":{"taskId":15,"userId":4}}]';
+	var _v0 = A2(
+		$elm$json$Json$Decode$decodeString,
+		$elm$json$Json$Decode$array($author$project$Event$decoder),
+		data);
+	if (_v0.$ === 'Err') {
+		var error = _v0.a;
+		return _Debug_todo(
+			'Event',
+			{
+				start: {line: 241, column: 13},
+				end: {line: 241, column: 23}
+			})(
+			$elm$json$Json$Decode$errorToString(error));
+	} else {
+		var array = _v0.a;
+		return array;
+	}
+}();
 var $elm$core$Array$setHelp = F4(
 	function (shift, index, value, tree) {
 		var pos = $elm$core$Array$bitMask & (index >>> shift);
@@ -5943,74 +6033,6 @@ var $elm$core$Array$set = F3(
 			startShift,
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
-	});
-var $elm$core$Dict$singleton = F2(
-	function (key, value) {
-		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-	});
-var $elm$core$Dict$foldl = F3(
-	function (func, acc, dict) {
-		foldl:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return acc;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldl, func, acc, left)),
-					$temp$dict = right;
-				func = $temp$func;
-				acc = $temp$acc;
-				dict = $temp$dict;
-				continue foldl;
-			}
-		}
-	});
-var $elm$core$Dict$union = F2(
-	function (t1, t2) {
-		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Main$eventToRows = F2(
-	function (_v0, rows) {
-		var index = _v0.a;
-		var event = _v0.b;
-		if (event.$ === 'CreateUser') {
-			var name = event.a;
-			return A3(
-				$elm$core$Dict$insert,
-				index,
-				A2($elm$core$Dict$singleton, 'name', name),
-				rows);
-		} else {
-			var id = event.a;
-			var data = event.b;
-			return function (updated) {
-				return A3($elm$core$Dict$insert, id, updated, rows);
-			}(
-				A2(
-					$elm$core$Dict$union,
-					data,
-					A2(
-						$elm$core$Maybe$withDefault,
-						$elm$core$Dict$empty,
-						A2($elm$core$Dict$get, id, rows))));
-		}
 	});
 var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
 var $elm$core$Elm$JsArray$slice = _JsArray_slice;
@@ -6258,16 +6280,87 @@ var $elm$core$Array$toIndexedList = function (array) {
 		_Utils_Tuple2(len - 1, _List_Nil),
 		array).b;
 };
-var $author$project$Main$toRows = F2(
+var $elm$core$Dict$singleton = F2(
+	function (key, value) {
+		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+	});
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Event$toUserRows = F2(
+	function (_v0, rows) {
+		var index = _v0.a;
+		var event = _v0.b;
+		switch (event.$) {
+			case 'CreateUser':
+				var name = event.a;
+				return A3(
+					$elm$core$Dict$insert,
+					index,
+					A2($elm$core$Dict$singleton, 'name', name),
+					rows);
+			case 'UpdateUser':
+				var id = event.a;
+				var data = event.b;
+				return function (updated) {
+					return A3($elm$core$Dict$insert, id, updated, rows);
+				}(
+					A2(
+						$elm$core$Dict$union,
+						data,
+						A2(
+							$elm$core$Maybe$withDefault,
+							$elm$core$Dict$empty,
+							A2($elm$core$Dict$get, id, rows))));
+			default:
+				return rows;
+		}
+	});
+var $author$project$Event$toCurrentUserRows = F2(
 	function (position, events) {
 		return A3(
 			$elm$core$List$foldl,
-			$author$project$Main$eventToRows,
+			$author$project$Event$toUserRows,
 			$elm$core$Dict$empty,
 			$elm$core$Array$toIndexedList(
 				A3($elm$core$Array$slice, 0, position, events)));
 	});
-var $author$project$Main$update = F2(
+var $author$project$Update$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'UpdateCreateUser':
@@ -6280,11 +6373,11 @@ var $author$project$Main$update = F2(
 					model,
 					{
 						createUser: '',
-						position: $elm$core$Array$length(model.userEvents) + 1,
-						userEvents: A2(
+						events: A2(
 							$elm$core$Array$push,
-							$author$project$Main$CreateUser(model.createUser),
-							model.userEvents)
+							$author$project$Event$CreateUser(model.createUser),
+							model.events),
+						position: $elm$core$Array$length(model.events) + 1
 					});
 			case 'Expand':
 				var _int = msg.a;
@@ -6305,7 +6398,7 @@ var $author$project$Main$update = F2(
 				var _v1 = A2(
 					$elm$core$Dict$get,
 					_int,
-					A2($author$project$Main$toRows, model.position, model.userEvents));
+					A2($author$project$Event$toCurrentUserRows, model.position, model.events));
 				if (_v1.$ === 'Nothing') {
 					return model;
 				} else {
@@ -6376,7 +6469,7 @@ var $author$project$Main$update = F2(
 				} else {
 					var index = _v6.a;
 					var newEvent = A2(
-						$author$project$Main$UpdateUser,
+						$author$project$Event$UpdateUser,
 						index,
 						$elm$core$Dict$fromList(
 							$elm$core$Array$toList(model.editingUserData)));
@@ -6385,11 +6478,11 @@ var $author$project$Main$update = F2(
 						{
 							editingUser: $elm$core$Maybe$Nothing,
 							editingUserData: $elm$core$Array$empty,
-							position: $elm$core$Array$length(model.userEvents) + 1,
-							userEvents: A2($elm$core$Array$push, newEvent, model.userEvents)
+							events: A2($elm$core$Array$push, newEvent, model.events),
+							position: $elm$core$Array$length(model.events) + 1
 						});
 				}
-			default:
+			case 'UpdatePosition':
 				var value = msg.a;
 				var _v7 = $elm$core$String$toInt(value);
 				if (_v7.$ === 'Nothing') {
@@ -6400,13 +6493,22 @@ var $author$project$Main$update = F2(
 						model,
 						{position: position});
 				}
+			default:
+				var events = $author$project$Event$seedEvents;
+				return _Utils_update(
+					model,
+					{
+						events: events,
+						position: $elm$core$Array$length(events) + 1
+					});
 		}
 	});
-var $author$project$Main$SubmitCreateUser = {$: 'SubmitCreateUser'};
-var $author$project$Main$UpdateCreateUser = function (a) {
+var $author$project$Msg$SeedEvents = {$: 'SeedEvents'};
+var $author$project$Msg$SubmitCreateUser = {$: 'SubmitCreateUser'};
+var $author$project$Msg$UpdateCreateUser = function (a) {
 	return {$: 'UpdateCreateUser', a: a};
 };
-var $author$project$Main$UpdatePosition = function (a) {
+var $author$project$Msg$UpdatePosition = function (a) {
 	return {$: 'UpdatePosition', a: a};
 };
 var $elm$core$Maybe$andThen = F2(
@@ -6429,7 +6531,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$option = _VirtualDom_node('option');
-var $author$project$Main$SelectEditUser = function (a) {
+var $author$project$Msg$SelectEditUser = function (a) {
 	return {$: 'SelectEditUser', a: a};
 };
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -6452,7 +6554,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$rowToOption = function (_v0) {
+var $author$project$View$rowToOption = function (_v0) {
 	var id = _v0.a;
 	var data = _v0.b;
 	return A2(
@@ -6462,7 +6564,7 @@ var $author$project$Main$rowToOption = function (_v0) {
 				$elm$html$Html$Attributes$value(
 				$elm$core$String$fromInt(id)),
 				$elm$html$Html$Events$onClick(
-				$author$project$Main$SelectEditUser(id))
+				$author$project$Msg$SelectEditUser(id))
 			]),
 		_List_fromArray(
 			[
@@ -6474,7 +6576,7 @@ var $author$project$Main$rowToOption = function (_v0) {
 			]));
 };
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $author$project$Main$editUserSelect = function (rows) {
+var $author$project$View$editUserSelect = function (rows) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -6500,11 +6602,11 @@ var $author$project$Main$editUserSelect = function (rows) {
 							])),
 					A2(
 						$elm$core$List$map,
-						$author$project$Main$rowToOption,
+						$author$project$View$rowToOption,
 						$elm$core$Dict$toList(rows))))
 			]));
 };
-var $author$project$Main$getUser = F2(
+var $author$project$View$getUser = F2(
 	function (rows, id) {
 		return A2($elm$core$Dict$get, id, rows);
 	});
@@ -6575,12 +6677,10 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
 	_List_fromArray(
@@ -6595,19 +6695,19 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $author$project$Main$AddEditingRow = {$: 'AddEditingRow'};
-var $author$project$Main$CancelEditing = {$: 'CancelEditing'};
-var $author$project$Main$SubmitEditUser = {$: 'SubmitEditUser'};
-var $author$project$Main$UpdateEditingRowKey = F2(
+var $author$project$Msg$AddEditingRow = {$: 'AddEditingRow'};
+var $author$project$Msg$CancelEditing = {$: 'CancelEditing'};
+var $author$project$Msg$SubmitEditUser = {$: 'SubmitEditUser'};
+var $author$project$Msg$UpdateEditingRowKey = F2(
 	function (a, b) {
 		return {$: 'UpdateEditingRowKey', a: a, b: b};
 	});
-var $author$project$Main$UpdateEditingRowValue = F2(
+var $author$project$Msg$UpdateEditingRowValue = F2(
 	function (a, b) {
 		return {$: 'UpdateEditingRowValue', a: a, b: b};
 	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$Main$renderEditInputs = function (_v0) {
+var $author$project$View$renderEditInputs = function (_v0) {
 	var index = _v0.a;
 	var _v1 = _v0.b;
 	var key = _v1.a;
@@ -6643,7 +6743,7 @@ var $author$project$Main$renderEditInputs = function (_v0) {
 										$elm$html$Html$Attributes$class('form-control'),
 										$elm$html$Html$Attributes$type_('text'),
 										$elm$html$Html$Events$onInput(
-										$author$project$Main$UpdateEditingRowKey(index)),
+										$author$project$Msg$UpdateEditingRowKey(index)),
 										$elm$html$Html$Attributes$value(key)
 									]),
 								_List_Nil)
@@ -6663,7 +6763,7 @@ var $author$project$Main$renderEditInputs = function (_v0) {
 										$elm$html$Html$Attributes$class('form-control'),
 										$elm$html$Html$Attributes$type_('text'),
 										$elm$html$Html$Events$onInput(
-										$author$project$Main$UpdateEditingRowValue(index)),
+										$author$project$Msg$UpdateEditingRowValue(index)),
 										$elm$html$Html$Attributes$value(val)
 									]),
 								_List_Nil)
@@ -6671,7 +6771,7 @@ var $author$project$Main$renderEditInputs = function (_v0) {
 					]))
 			]));
 };
-var $author$project$Main$renderEdit = F2(
+var $author$project$View$renderEdit = F2(
 	function (editingData, row) {
 		return A2(
 			$elm$html$Html$div,
@@ -6716,7 +6816,7 @@ var $author$project$Main$renderEdit = F2(
 									_List_fromArray(
 										[
 											$elm$html$Html$Attributes$class('btn btn-danger'),
-											$elm$html$Html$Events$onClick($author$project$Main$CancelEditing)
+											$elm$html$Html$Events$onClick($author$project$Msg$CancelEditing)
 										]),
 									_List_fromArray(
 										[
@@ -6773,7 +6873,7 @@ var $author$project$Main$renderEdit = F2(
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								$author$project$Main$renderEditInputs,
+								$author$project$View$renderEditInputs,
 								$elm$core$Array$toIndexedList(editingData)),
 							_List_fromArray(
 								[
@@ -6806,7 +6906,7 @@ var $author$project$Main$renderEdit = F2(
 															_List_fromArray(
 																[
 																	$elm$html$Html$Attributes$class('btn btn-info'),
-																	$elm$html$Html$Events$onClick($author$project$Main$AddEditingRow)
+																	$elm$html$Html$Events$onClick($author$project$Msg$AddEditingRow)
 																]),
 															_List_fromArray(
 																[
@@ -6826,7 +6926,7 @@ var $author$project$Main$renderEdit = F2(
 															_List_fromArray(
 																[
 																	$elm$html$Html$Attributes$class('btn btn-success'),
-																	$elm$html$Html$Events$onClick($author$project$Main$SubmitEditUser)
+																	$elm$html$Html$Events$onClick($author$project$Msg$SubmitEditUser)
 																]),
 															_List_fromArray(
 																[
@@ -6839,7 +6939,7 @@ var $author$project$Main$renderEdit = F2(
 				]));
 	});
 var $elm$html$Html$td = _VirtualDom_node('td');
-var $author$project$Main$renderCell = F2(
+var $author$project$View$renderCell = F2(
 	function (data, col) {
 		return A2(
 			$elm$html$Html$td,
@@ -6854,7 +6954,7 @@ var $author$project$Main$renderCell = F2(
 				]));
 	});
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$Main$renderRow = F2(
+var $author$project$View$renderRow = F2(
 	function (headers, _v0) {
 		var id = _v0.a;
 		var data = _v0.b;
@@ -6873,18 +6973,33 @@ var $author$project$Main$renderRow = F2(
 						])),
 				A2(
 					$elm$core$List$map,
-					$author$project$Main$renderCell(data),
+					$author$project$View$renderCell(data),
 					headers)));
 	});
-var $author$project$Main$Collapse = function (a) {
+var $author$project$Msg$Collapse = function (a) {
 	return {$: 'Collapse', a: a};
 };
-var $author$project$Main$Expand = function (a) {
+var $author$project$Msg$Expand = function (a) {
 	return {$: 'Expand', a: a};
 };
+var $elm$core$Dict$member = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$get, key, dict);
+		if (_v0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+var $elm$core$Set$member = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return A2($elm$core$Dict$member, key, dict);
+	});
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$html$Html$th = _VirtualDom_node('th');
 var $elm$html$Html$thead = _VirtualDom_node('thead');
-var $author$project$Main$headings = A2(
+var $author$project$Event$headings = A2(
 	$elm$html$Html$thead,
 	_List_Nil,
 	_List_fromArray(
@@ -6906,7 +7021,7 @@ var $author$project$Main$headings = A2(
 		]));
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$tbody = _VirtualDom_node('tbody');
-var $author$project$Main$updateBody = function (_v0) {
+var $author$project$Event$updateBody = function (_v0) {
 	var field = _v0.a;
 	var value = _v0.b;
 	return A2(
@@ -6930,83 +7045,269 @@ var $author$project$Main$updateBody = function (_v0) {
 					]))
 			]));
 };
-var $author$project$Main$eventBody = function (event) {
-	if (event.$ === 'CreateUser') {
-		var name = event.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('row')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('col-6')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('name')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('col-6')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(name)
-						]))
-				]));
-	} else {
-		var id = event.a;
-		var body = event.b;
-		return A2(
-			$elm$html$Html$table,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('table')
-				]),
-			_List_fromArray(
-				[
-					$author$project$Main$headings,
-					A2(
-					$elm$html$Html$tbody,
-					_List_Nil,
-					A2(
-						$elm$core$List$map,
-						$author$project$Main$updateBody,
-						$elm$core$Dict$toList(body)))
-				]));
+var $author$project$Event$renderBody = function (event) {
+	switch (event.$) {
+		case 'CreateUser':
+			var name = event.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('name')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(name)
+							]))
+					]));
+		case 'UpdateUser':
+			var id = event.a;
+			var body = event.b;
+			return A2(
+				$elm$html$Html$table,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('table')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$tbody,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$th,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('User ID')
+									])),
+								A2(
+								$elm$html$Html$th,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(
+										$elm$core$String$fromInt(id))
+									]))
+							])),
+						$author$project$Event$headings,
+						A2(
+						$elm$html$Html$tbody,
+						_List_Nil,
+						A2(
+							$elm$core$List$map,
+							$author$project$Event$updateBody,
+							$elm$core$Dict$toList(body)))
+					]));
+		case 'CreateTask':
+			var name = event.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('name')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(name)
+							]))
+					]));
+		case 'UpdateTaskDescription':
+			var id = event.a;
+			var description = event.b;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Task ID')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(id))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('name')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(description)
+							]))
+					]));
+		case 'AssignTask':
+			var taskId = event.a;
+			var userId = event.b;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Task ID')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(taskId))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('User ID')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(userId))
+							]))
+					]));
+		default:
+			var id = event.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Task ID')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-6')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(id))
+							]))
+					]));
 	}
 };
-var $author$project$Main$eventToName = function (event) {
-	if (event.$ === 'CreateUser') {
-		return 'Create User';
-	} else {
-		return 'Update User';
+var $author$project$Event$toName = function (event) {
+	switch (event.$) {
+		case 'CreateUser':
+			return 'Create User';
+		case 'UpdateUser':
+			return 'Update User';
+		case 'CreateTask':
+			return 'Create Task';
+		case 'UpdateTaskDescription':
+			return 'Update Task Description';
+		case 'AssignTask':
+			return 'Assign Task';
+		default:
+			return 'Complete Task';
 	}
 };
-var $elm$core$Dict$member = F2(
-	function (key, dict) {
-		var _v0 = A2($elm$core$Dict$get, key, dict);
-		if (_v0.$ === 'Just') {
-			return true;
-		} else {
-			return false;
-		}
-	});
-var $elm$core$Set$member = F2(
-	function (key, _v0) {
-		var dict = _v0.a;
-		return A2($elm$core$Dict$member, key, dict);
-	});
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $author$project$Main$showEvent = F3(
+var $author$project$View$showEvent = F3(
 	function (expanded, index, event) {
 		var isExpanded = A2($elm$core$Set$member, index, expanded);
 		return A2(
@@ -7042,7 +7343,7 @@ var $author$project$Main$showEvent = F3(
 									_List_fromArray(
 										[
 											$elm$html$Html$text(
-											$author$project$Main$eventToName(event))
+											$author$project$Event$toName(event))
 										]))
 								])),
 							A2(
@@ -7059,7 +7360,7 @@ var $author$project$Main$showEvent = F3(
 										[
 											$elm$html$Html$Attributes$class('btn btn-light btn-sm'),
 											$elm$html$Html$Events$onClick(
-											isExpanded ? $author$project$Main$Collapse(index) : $author$project$Main$Expand(index))
+											isExpanded ? $author$project$Msg$Collapse(index) : $author$project$Msg$Expand(index))
 										]),
 									_List_fromArray(
 										[
@@ -7068,39 +7369,42 @@ var $author$project$Main$showEvent = F3(
 										]))
 								]))
 						])),
-					isExpanded ? $author$project$Main$eventBody(event) : $elm$html$Html$text('')
+					isExpanded ? $author$project$Event$renderBody(event) : $elm$html$Html$text('')
 				]));
 	});
 var $elm$core$List$sortBy = _List_sortBy;
 var $elm$html$Html$Attributes$step = function (n) {
 	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
 };
-var $author$project$Main$eventToHeaders = F2(
+var $author$project$Event$toUserHeaders = F2(
 	function (event, headers) {
-		if (event.$ === 'CreateUser') {
-			return A2($elm$core$Set$insert, 'name', headers);
-		} else {
-			var data = event.b;
-			return A3(
-				$elm$core$List$foldl,
-				$elm$core$Set$insert,
-				headers,
-				$elm$core$Dict$keys(data));
+		switch (event.$) {
+			case 'CreateUser':
+				return A2($elm$core$Set$insert, 'name', headers);
+			case 'UpdateUser':
+				var data = event.b;
+				return A3(
+					$elm$core$List$foldl,
+					$elm$core$Set$insert,
+					headers,
+					$elm$core$Dict$keys(data));
+			default:
+				return headers;
 		}
 	});
-var $author$project$Main$toHeaders = F2(
+var $author$project$Event$toCurrentUserHeaders = F2(
 	function (position, events) {
 		return A3(
 			$elm$core$List$foldl,
-			$author$project$Main$eventToHeaders,
+			$author$project$Event$toUserHeaders,
 			$elm$core$Set$empty,
 			$elm$core$Array$toList(
 				A3($elm$core$Array$slice, 0, position, events)));
 	});
-var $author$project$Main$view = function (model) {
-	var rows = A2($author$project$Main$toRows, model.position, model.userEvents);
-	var headers = $elm$core$Set$toList(
-		A2($author$project$Main$toHeaders, model.position, model.userEvents));
+var $author$project$View$view = function (model) {
+	var userRows = A2($author$project$Event$toCurrentUserRows, model.position, model.events);
+	var userHeaders = $elm$core$Set$toList(
+		A2($author$project$Event$toCurrentUserHeaders, model.position, model.events));
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -7109,6 +7413,35 @@ var $author$project$Main$view = function (model) {
 			]),
 		_List_fromArray(
 			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-12')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('btn btn-success'),
+										$elm$html$Html$Events$onClick($author$project$Msg$SeedEvents)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Seed')
+									]))
+							]))
+					])),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -7146,7 +7479,7 @@ var $author$project$Main$view = function (model) {
 											[
 												$elm$html$Html$Attributes$type_('text'),
 												$elm$html$Html$Attributes$value(model.createUser),
-												$elm$html$Html$Events$onInput($author$project$Main$UpdateCreateUser),
+												$elm$html$Html$Events$onInput($author$project$Msg$UpdateCreateUser),
 												$elm$html$Html$Attributes$class('form-control')
 											]),
 										_List_Nil),
@@ -7155,7 +7488,7 @@ var $author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												$elm$html$Html$Attributes$class('btn btn-primary mt-1'),
-												$elm$html$Html$Events$onClick($author$project$Main$SubmitCreateUser)
+												$elm$html$Html$Events$onClick($author$project$Msg$SubmitCreateUser)
 											]),
 										_List_fromArray(
 											[
@@ -7184,8 +7517,8 @@ var $author$project$Main$view = function (model) {
 							$elm$core$Array$toList(
 								A2(
 									$elm$core$Array$indexedMap,
-									$author$project$Main$showEvent(model.expanded),
-									model.userEvents))))
+									$author$project$View$showEvent(model.expanded),
+									model.events))))
 					])),
 				A2($elm$html$Html$hr, _List_Nil, _List_Nil),
 				A2(
@@ -7229,11 +7562,11 @@ var $author$project$Main$view = function (model) {
 										$elm$html$Html$Attributes$min('0'),
 										$elm$html$Html$Attributes$max(
 										$elm$core$String$fromInt(
-											$elm$core$Array$length(model.userEvents))),
+											$elm$core$Array$length(model.events))),
 										$elm$html$Html$Attributes$value(
 										$elm$core$String$fromInt(model.position)),
 										$elm$html$Html$Attributes$class('form-control'),
-										$elm$html$Html$Events$onInput($author$project$Main$UpdatePosition)
+										$elm$html$Html$Events$onInput($author$project$Msg$UpdatePosition)
 									]),
 								_List_Nil)
 							]))
@@ -7265,13 +7598,13 @@ var $author$project$Main$view = function (model) {
 							])),
 						A2(
 						$elm$core$Maybe$withDefault,
-						$author$project$Main$editUserSelect(rows),
+						$author$project$View$editUserSelect(userRows),
 						A2(
 							$elm$core$Maybe$map,
-							$author$project$Main$renderEdit(model.editingUserData),
+							$author$project$View$renderEdit(model.editingUserData),
 							A2(
 								$elm$core$Maybe$andThen,
-								$author$project$Main$getUser(rows),
+								$author$project$View$getUser(userRows),
 								model.editingUser)))
 					])),
 				A2($elm$html$Html$hr, _List_Nil, _List_Nil),
@@ -7329,23 +7662,23 @@ var $author$project$Main$view = function (model) {
 																$elm$html$Html$text(heading)
 															]));
 												},
-												headers))),
+												userHeaders))),
 										A2(
 										$elm$html$Html$tbody,
 										_List_Nil,
 										A2(
 											$elm$core$List$map,
-											$author$project$Main$renderRow(headers),
+											$author$project$View$renderRow(userHeaders),
 											A2(
 												$elm$core$List$sortBy,
 												$elm$core$Tuple$first,
-												$elm$core$Dict$toList(rows))))
+												$elm$core$Dict$toList(userRows))))
 									]))
 							]))
 					]))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$sandbox(
-	{init: $author$project$Main$initialModel, update: $author$project$Main$update, view: $author$project$Main$view});
+	{init: $author$project$Model$initialModel, update: $author$project$Update$update, view: $author$project$View$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
