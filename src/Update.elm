@@ -12,15 +12,28 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UpdateCreateUser string ->
-            { model | createUser = string }
+            { model | createUserValue = string }
 
         SubmitCreateUser ->
             { model
                 | events =
                     Array.push
-                        (Event.CreateUser model.createUser)
+                        (Event.CreateUser model.createUserValue)
                         model.events
-                , createUser = ""
+                , createUserValue = ""
+                , position = Array.length model.events + 1
+            }
+
+        UpdateCreateTask string ->
+            { model | createTaskValue = string }
+
+        SubmitCreateTask ->
+            { model
+                | events =
+                    Array.push
+                        (Event.CreateTask model.createTaskValue)
+                        model.events
+                , createTaskValue = ""
                 , position = Array.length model.events + 1
             }
 
@@ -29,6 +42,9 @@ update msg model =
 
         Collapse int ->
             { model | expanded = Set.remove int model.expanded }
+
+        SetEditTab editTab ->
+            { model | editTab = editTab }
 
         SelectEditUser int ->
             case Event.toCurrentUserRows model.position model.events |> Dict.get int of
@@ -43,8 +59,22 @@ update msg model =
                                 |> Array.fromList
                     }
 
-        CancelEditing ->
+        SelectEditTask int ->
+            case Event.toCurrentTaskRows model.position model.events |> Dict.get int of
+                Nothing ->
+                    model
+
+                Just row ->
+                    { model
+                        | editingTask = Just int
+                        , editingTaskDescription = row.description
+                    }
+
+        CancelEditingUser ->
             { model | editingUser = Nothing }
+
+        CancelEditingTask ->
+            { model | editingTask = Nothing }
 
         AddEditingRow ->
             { model | editingUserData = Array.push ("", "") model.editingUserData }
@@ -71,12 +101,12 @@ update msg model =
                 Nothing ->
                     model
 
-                Just index ->
+                Just id ->
                     let
                         newEvent = model.editingUserData
                             |> Array.toList
                             |> Dict.fromList
-                            |> Event.UpdateUser index
+                            |> Event.UpdateUser id
 
                     in
                     { model
@@ -85,6 +115,52 @@ update msg model =
                         , editingUserData = Array.empty
                         , position = Array.length model.events + 1
                     }
+
+        UpdateEditingTaskDescription description ->
+            case model.editingTask of
+                Nothing ->
+                    model
+
+                Just _ ->
+                    { model | editingTaskDescription = description }
+
+        SubmitEditingTaskDescription ->
+            case model.editingTask of
+                Nothing ->
+                    model
+
+                Just id ->
+                    let
+                        newEvent = Event.UpdateTaskDescription id model.editingTaskDescription
+                    in
+                    { model
+                        | events = Array.push newEvent model.events
+                        , editingTask = Nothing
+                        , editingTaskDescription = ""
+                        , position = Array.length model.events + 1
+                    }
+
+        SelectAssignUser userId ->
+            case model.editingTask of
+                Nothing ->
+                    model
+
+                Just _ ->
+                    { model | editTaskAssignUser = Just userId }
+
+        SubmitAssignUser ->
+            case Maybe.map2 Event.AssignTask model.editingTask model.editTaskAssignUser of
+                Just newEvent ->
+                    { model
+                        | events = Array.push newEvent model.events
+                        , editingTask = Nothing
+                        , editTaskAssignUser = Nothing
+                        , position = Array.length model.events + 1
+                    }
+
+                Nothing ->
+                    model
+
 
         UpdatePosition value ->
             case String.toInt value of
