@@ -6000,8 +6000,8 @@ var $author$project$Event$seedEvents = function () {
 		return _Debug_todo(
 			'Event',
 			{
-				start: {line: 241, column: 13},
-				end: {line: 241, column: 23}
+				start: {line: 291, column: 13},
+				end: {line: 291, column: 23}
 			})(
 			$elm$json$Json$Decode$errorToString(error));
 	} else {
@@ -6710,6 +6710,7 @@ var $author$project$Update$update = F2(
 					{table: table});
 		}
 	});
+var $author$project$Model$ProductivityTable = {$: 'ProductivityTable'};
 var $author$project$Msg$SeedEvents = {$: 'SeedEvents'};
 var $author$project$Msg$SetEditTab = function (a) {
 	return {$: 'SetEditTab', a: a};
@@ -7639,12 +7640,86 @@ var $elm$core$Array$indexedMap = F2(
 	});
 var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
 var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
-var $author$project$Msg$Collapse = function (a) {
-	return {$: 'Collapse', a: a};
+var $elm$core$Dict$sizeHelp = F2(
+	function (n, dict) {
+		sizeHelp:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return n;
+			} else {
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$n = A2($elm$core$Dict$sizeHelp, n + 1, right),
+					$temp$dict = left;
+				n = $temp$n;
+				dict = $temp$dict;
+				continue sizeHelp;
+			}
+		}
+	});
+var $elm$core$Dict$size = function (dict) {
+	return A2($elm$core$Dict$sizeHelp, 0, dict);
 };
-var $author$project$Msg$Expand = function (a) {
-	return {$: 'Expand', a: a};
+var $elm$core$Set$size = function (_v0) {
+	var dict = _v0.a;
+	return $elm$core$Dict$size(dict);
 };
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $author$project$View$renderRow = function (_v0) {
+	var id = _v0.a;
+	var name = _v0.b.name;
+	var activeTasks = _v0.b.activeTasks;
+	var completedTasks = _v0.b.completedTasks;
+	return A2(
+		$elm$html$Html$tr,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$String$fromInt(id))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(name)
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$String$fromInt(
+							$elm$core$Set$size(activeTasks)))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$String$fromInt(
+							$elm$core$Set$size(completedTasks)))
+					]))
+			]));
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$html$Html$tbody = _VirtualDom_node('tbody');
+var $elm$html$Html$th = _VirtualDom_node('th');
+var $elm$html$Html$thead = _VirtualDom_node('thead');
+var $author$project$Event$ProductivityRow = F3(
+	function (name, activeTasks, completedTasks) {
+		return {activeTasks: activeTasks, completedTasks: completedTasks, name: name};
+	});
 var $elm$core$Dict$member = F2(
 	function (key, dict) {
 		var _v0 = A2($elm$core$Dict$get, key, dict);
@@ -7659,8 +7734,162 @@ var $elm$core$Set$member = F2(
 		var dict = _v0.a;
 		return A2($elm$core$Dict$member, key, dict);
 	});
-var $elm$html$Html$th = _VirtualDom_node('th');
-var $elm$html$Html$thead = _VirtualDom_node('thead');
+var $author$project$Event$completeTaskForUser = F2(
+	function (taskId, _v0) {
+		var userId = _v0.a;
+		var row = _v0.b;
+		return A2($elm$core$Set$member, taskId, row.activeTasks) ? _Utils_Tuple2(
+			userId,
+			_Utils_update(
+				row,
+				{
+					activeTasks: A2($elm$core$Set$remove, taskId, row.activeTasks),
+					completedTasks: A2($elm$core$Set$insert, taskId, row.completedTasks)
+				})) : _Utils_Tuple2(userId, row);
+	});
+var $author$project$Event$toProductivityRows = F2(
+	function (_v0, rows) {
+		var index = _v0.a;
+		var event = _v0.b;
+		switch (event.$) {
+			case 'CreateUser':
+				var name = event.a;
+				return A3(
+					$elm$core$Dict$insert,
+					index,
+					A3($author$project$Event$ProductivityRow, name, $elm$core$Set$empty, $elm$core$Set$empty),
+					rows);
+			case 'AssignTask':
+				var taskId = event.a;
+				var userId = event.b;
+				var _v2 = A2($elm$core$Dict$get, userId, rows);
+				if (_v2.$ === 'Nothing') {
+					return rows;
+				} else {
+					var row = _v2.a;
+					return A3(
+						$elm$core$Dict$insert,
+						userId,
+						_Utils_update(
+							row,
+							{
+								activeTasks: A2($elm$core$Set$insert, taskId, row.activeTasks)
+							}),
+						rows);
+				}
+			case 'CompleteTask':
+				var taskId = event.a;
+				return $elm$core$Dict$fromList(
+					A2(
+						$elm$core$List$map,
+						$author$project$Event$completeTaskForUser(taskId),
+						$elm$core$Dict$toList(rows)));
+			default:
+				return rows;
+		}
+	});
+var $author$project$Event$toCurrentProductivityRows = F2(
+	function (position, events) {
+		return A3(
+			$elm$core$List$foldl,
+			$author$project$Event$toProductivityRows,
+			$elm$core$Dict$empty,
+			$elm$core$Array$toIndexedList(
+				A3($elm$core$Array$slice, 0, position, events)));
+	});
+var $author$project$View$productivityTableView = F2(
+	function (position, events) {
+		var rows = A2($author$project$Event$toCurrentProductivityRows, position, events);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('row mt-2')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('col-12')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$table,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('table')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$thead,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$th,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('border-top-0')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('ID')
+												])),
+											A2(
+											$elm$html$Html$th,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('border-top-0')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Name')
+												])),
+											A2(
+											$elm$html$Html$th,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('border-top-0')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Active Tasks')
+												])),
+											A2(
+											$elm$html$Html$th,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('border-top-0')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Completed Tasks')
+												]))
+										])),
+									A2(
+									$elm$html$Html$tbody,
+									_List_Nil,
+									A2(
+										$elm$core$List$map,
+										$author$project$View$renderRow,
+										A2(
+											$elm$core$List$sortBy,
+											$elm$core$Tuple$first,
+											$elm$core$Dict$toList(rows))))
+								]))
+						]))
+				]));
+	});
+var $author$project$Msg$Collapse = function (a) {
+	return {$: 'Collapse', a: a};
+};
+var $author$project$Msg$Expand = function (a) {
+	return {$: 'Expand', a: a};
+};
 var $author$project$Event$headings = A2(
 	$elm$html$Html$thead,
 	_List_Nil,
@@ -7681,10 +7910,6 @@ var $author$project$Event$headings = A2(
 					$elm$html$Html$text('Value')
 				]))
 		]));
-var $elm$html$Html$table = _VirtualDom_node('table');
-var $elm$html$Html$tbody = _VirtualDom_node('tbody');
-var $elm$html$Html$td = _VirtualDom_node('td');
-var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Event$updateBody = function (_v0) {
 	var field = _v0.a;
 	var value = _v0.b;
@@ -8093,7 +8318,6 @@ var $author$project$View$Task$renderRow = function (_v0) {
 					]))
 			]));
 };
-var $elm$core$List$sortBy = _List_sortBy;
 var $author$project$View$Task$tableView = function (rows) {
 	return A2(
 		$elm$html$Html$div,
@@ -8594,14 +8818,45 @@ var $author$project$View$view = function (model) {
 									[
 										$elm$html$Html$text('Task Table')
 									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('nav-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$a,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('nav-link pointer'),
+										$elm$html$Html$Attributes$classList(
+										_List_fromArray(
+											[
+												_Utils_Tuple2(
+												'active',
+												_Utils_eq(model.table, $author$project$Model$ProductivityTable))
+											])),
+										$elm$html$Html$Events$onClick(
+										$author$project$Msg$SetTable($author$project$Model$ProductivityTable))
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Productivity Table')
+									]))
 							]))
 					])),
 				function () {
 				var _v1 = model.table;
-				if (_v1.$ === 'UserTable') {
-					return A2($author$project$View$User$tableView, userHeaders, userRows);
-				} else {
-					return $author$project$View$Task$tableView(taskRows);
+				switch (_v1.$) {
+					case 'UserTable':
+						return A2($author$project$View$User$tableView, userHeaders, userRows);
+					case 'TaskTable':
+						return $author$project$View$Task$tableView(taskRows);
+					default:
+						return A2($author$project$View$productivityTableView, model.position, model.events);
 				}
 			}()
 			]));

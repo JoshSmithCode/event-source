@@ -230,6 +230,56 @@ toTaskRows ( index, event ) rows =
             rows
 
 
+type alias ProductivityRow =
+    { name : String
+    , activeTasks : Set Int
+    , completedTasks : Set Int
+    }
+
+
+toCurrentProductivityRows : Int -> Array Event -> Dict Int ProductivityRow
+toCurrentProductivityRows position events =
+    events
+        |> Array.slice 0 position
+        |> Array.toIndexedList
+        |> List.foldl toProductivityRows Dict.empty
+
+
+toProductivityRows : ( Int, Event ) -> Dict Int ProductivityRow -> Dict Int ProductivityRow
+toProductivityRows (index, event) rows =
+    case event of
+        CreateUser name ->
+            Dict.insert index (ProductivityRow name Set.empty Set.empty) rows
+
+        AssignTask taskId userId ->
+            case Dict.get userId rows of
+                Nothing ->
+                    rows
+
+                Just row ->
+                    Dict.insert userId { row | activeTasks = Set.insert taskId row.activeTasks } rows
+
+        CompleteTask taskId ->
+            Dict.toList rows
+                |> List.map (completeTaskForUser taskId)
+                |> Dict.fromList
+
+        _ ->
+            rows
+
+
+completeTaskForUser : Int -> (Int, ProductivityRow) -> (Int, ProductivityRow)
+completeTaskForUser taskId (userId, row) =
+     if Set.member taskId row.activeTasks then
+        ( userId
+        , { row
+            | activeTasks = Set.remove taskId row.activeTasks
+            , completedTasks = Set.insert taskId row.completedTasks
+        })
+    else
+        (userId, row)
+
+
 seedEvents : Array Event
 seedEvents =
     let

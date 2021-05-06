@@ -32,6 +32,7 @@ type EditTab
 type Table
     = UserTable
     | TaskTable
+    | ProductivityTable
 
 
 initialModel : Model

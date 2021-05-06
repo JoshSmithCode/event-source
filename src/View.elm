@@ -2,7 +2,7 @@ module View exposing (..)
 
 import Array exposing (Array)
 import Dict exposing (Dict)
-import Event exposing (Event)
+import Event exposing (Event, ProductivityRow)
 import Html exposing (..)
 import Html.Attributes as Attributes exposing (..)
 import Html.Events exposing (..)
@@ -135,6 +135,15 @@ view model =
                     ]
                     [ text "Task Table" ]
                 ]
+            , div
+                [ class "nav-item" ]
+                [ a
+                    [ class "nav-link pointer"
+                    , classList [("active", model.table == ProductivityTable)]
+                    , onClick <| SetTable ProductivityTable
+                    ]
+                    [ text "Productivity Table" ]
+                ]
             ]
         , (
             case model.table of
@@ -143,7 +152,67 @@ view model =
 
                 TaskTable ->
                     Task.tableView taskRows
+
+                ProductivityTable ->
+                    productivityTableView model.position model.events
         )
+        ]
+
+
+productivityTableView : Int -> Array Event -> Html Msg
+productivityTableView position events =
+    let
+        rows = Event.toCurrentProductivityRows position events
+    in
+    div
+        [ class "row mt-2" ]
+        [ div
+            [ class "col-12" ]
+            [ table
+                [ class "table" ]
+                [ thead
+                    []
+                    [ th
+                        [ class "border-top-0"]
+                        [ text "ID" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Name" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Active Tasks" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Completed Tasks" ]
+                    ]
+                , tbody
+                    []
+                    (rows
+                        |> Dict.toList
+                        |> List.sortBy Tuple.first
+                        |> List.map renderRow
+                    )
+                ]
+            ]
+        ]
+
+
+renderRow : (Int, ProductivityRow) -> Html Msg
+renderRow ( id, { name, activeTasks, completedTasks }) =
+    tr
+        []
+        [ td
+            []
+            [ text <| String.fromInt id ]
+        , td
+            []
+            [ text name ]
+        , td
+            []
+            [ Set.size activeTasks |> String.fromInt |> text ]
+        , td
+            []
+            [ Set.size completedTasks |> String.fromInt |> text ]
         ]
 
 
