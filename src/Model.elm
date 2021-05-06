@@ -20,12 +20,18 @@ type alias Model =
     , editingTask : Maybe Int
     , editingTaskDescription : String
     , editTaskAssignUser : Maybe Int
+    , table : Table
     }
 
 
 type EditTab
     = UserTab
     | TaskTab
+
+
+type Table
+    = UserTable
+    | TaskTable
 
 
 initialModel : Model
@@ -43,4 +49,5 @@ initialModel =
     , editingTask = Nothing
     , editingTaskDescription = ""
     , editTaskAssignUser = Nothing
+    , table = UserTable
     }

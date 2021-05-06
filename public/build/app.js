@@ -4394,6 +4394,7 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 });
 var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $author$project$Model$UserTab = {$: 'UserTab'};
+var $author$project$Model$UserTable = {$: 'UserTable'};
 var $elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
 		return {$: 'Array_elm_builtin', a: a, b: b, c: c, d: d};
@@ -4499,7 +4500,7 @@ var $elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
 };
 var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
-var $author$project$Model$initialModel = {createEventData: $elm$core$Dict$empty, createEventUser: $elm$core$Maybe$Nothing, createTaskValue: '', createUserValue: '', editTab: $author$project$Model$UserTab, editTaskAssignUser: $elm$core$Maybe$Nothing, editingTask: $elm$core$Maybe$Nothing, editingTaskDescription: '', editingUser: $elm$core$Maybe$Nothing, editingUserData: $elm$core$Array$empty, events: $elm$core$Array$empty, expanded: $elm$core$Set$empty, position: 0};
+var $author$project$Model$initialModel = {createEventData: $elm$core$Dict$empty, createEventUser: $elm$core$Maybe$Nothing, createTaskValue: '', createUserValue: '', editTab: $author$project$Model$UserTab, editTaskAssignUser: $elm$core$Maybe$Nothing, editingTask: $elm$core$Maybe$Nothing, editingTaskDescription: '', editingUser: $elm$core$Maybe$Nothing, editingUserData: $elm$core$Array$empty, events: $elm$core$Array$empty, expanded: $elm$core$Set$empty, position: 0, table: $author$project$Model$UserTable};
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5989,7 +5990,7 @@ var $author$project$Event$decoder = $elm$json$Json$Decode$oneOf(
 		[$author$project$Event$createUserDecoder, $author$project$Event$updateUserDecoder, $author$project$Event$createTaskDecoder, $author$project$Event$updateTaskDescriptionDecoder, $author$project$Event$assignTaskDecoder, $author$project$Event$completeTaskDecoder]));
 var $elm$core$Debug$todo = _Debug_todo;
 var $author$project$Event$seedEvents = function () {
-	var data = '[{"CreateUser":"Josh Smith"},{"UpdateUser":{"id":0,"fields":{"name":"Joshua Smith","email":"josh@test.dev"}}},{"CreateUser":"Jessica Cooper"},{"CreateUser":"Tom Foolery"},{"CreateUser":"Harry"},{"UpdateUser":{"id":4,"fields":{"name":"Harry Lowe","email":"harry@dev.io"}}},{"UpdateUser":{"id":3,"fields":{"email":"tom@haha.lol"}}},{"UpdateUser":{"id":2,"fields":{"email":"jessica@employee.dev"}}},{"CreateTask":"Create login page"},{"CreateTask":"Tom and Bob reunion party"},{"CreateTask":"Buy fancier pants"},{"AssignTask":{"taskId":8,"userId":4}},{"AssignTask":{"taskId":3,"userId":10}},{"UpdateTaskDescription":{"id":9,"description":"Bob has agreed that no eyes will be consumed as long as the doors are opened."}},{"CompleteTask":10},{"CreateTask":"Chiron Beta Prime zoom conference"},{"UpdateTaskDescription":{"id":15,"description":"Don\'t forget to send them their xmas hamper 9-10 months in advance"}},{"AssignTask":{"taskId":15,"userId":4}}]';
+	var data = '[{"CreateUser":"Josh Smith"},{"UpdateUser":{"id":0,"fields":{"name":"Joshua Smith","email":"josh@test.dev"}}},{"CreateUser":"Jessica Cooper"},{"CreateUser":"Tom Foolery"},{"CreateUser":"Harry"},{"UpdateUser":{"id":4,"fields":{"name":"Harry Lowe","email":"harry@dev.io"}}},{"UpdateUser":{"id":3,"fields":{"email":"tom@haha.lol"}}},{"UpdateUser":{"id":2,"fields":{"email":"jessica@employee.dev"}}},{"CreateTask":"Create login page"},{"CreateTask":"Tom and Bob reunion party"},{"CreateTask":"Buy fancier pants"},{"AssignTask":{"taskId":8,"userId":4}},{"AssignTask":{"taskId":10,"userId":3}},{"UpdateTaskDescription":{"id":9,"description":"Bob has agreed that no eyes will be consumed as long as the doors are opened."}},{"CompleteTask":10},{"CreateTask":"Chiron Beta Prime zoom conference"},{"UpdateTaskDescription":{"id":15,"description":"Don\'t forget to send them their xmas hamper 9-10 months in advance"}},{"AssignTask":{"taskId":15,"userId":4}}]';
 	var _v0 = A2(
 		$elm$json$Json$Decode$decodeString,
 		$elm$json$Json$Decode$array($author$project$Event$decoder),
@@ -6694,7 +6695,7 @@ var $author$project$Update$update = F2(
 						model,
 						{position: position});
 				}
-			default:
+			case 'SeedEvents':
 				var events = $author$project$Event$seedEvents;
 				return _Utils_update(
 					model,
@@ -6702,13 +6703,22 @@ var $author$project$Update$update = F2(
 						events: events,
 						position: $elm$core$Array$length(events) + 1
 					});
+			default:
+				var table = msg.a;
+				return _Utils_update(
+					model,
+					{table: table});
 		}
 	});
 var $author$project$Msg$SeedEvents = {$: 'SeedEvents'};
 var $author$project$Msg$SetEditTab = function (a) {
 	return {$: 'SetEditTab', a: a};
 };
+var $author$project$Msg$SetTable = function (a) {
+	return {$: 'SetTable', a: a};
+};
 var $author$project$Model$TaskTab = {$: 'TaskTab'};
+var $author$project$Model$TaskTable = {$: 'TaskTable'};
 var $author$project$Msg$UpdatePosition = function (a) {
 	return {$: 'UpdatePosition', a: a};
 };
@@ -7629,44 +7639,6 @@ var $elm$core$Array$indexedMap = F2(
 	});
 var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
 var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
-var $elm$html$Html$td = _VirtualDom_node('td');
-var $author$project$View$renderCell = F2(
-	function (data, col) {
-		return A2(
-			$elm$html$Html$td,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text(
-					A2(
-						$elm$core$Maybe$withDefault,
-						'',
-						A2($elm$core$Dict$get, col, data)))
-				]));
-	});
-var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$View$renderRow = F2(
-	function (headers, _v0) {
-		var id = _v0.a;
-		var data = _v0.b;
-		return A2(
-			$elm$html$Html$tr,
-			_List_Nil,
-			A2(
-				$elm$core$List$cons,
-				A2(
-					$elm$html$Html$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							$elm$core$String$fromInt(id))
-						])),
-				A2(
-					$elm$core$List$map,
-					$author$project$View$renderCell(data),
-					headers)));
-	});
 var $author$project$Msg$Collapse = function (a) {
 	return {$: 'Collapse', a: a};
 };
@@ -7711,6 +7683,8 @@ var $author$project$Event$headings = A2(
 		]));
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$tbody = _VirtualDom_node('tbody');
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Event$updateBody = function (_v0) {
 	var field = _v0.a;
 	var value = _v0.b;
@@ -8062,10 +8036,265 @@ var $author$project$View$showEvent = F3(
 					isExpanded ? $author$project$Event$renderBody(event) : $elm$html$Html$text('')
 				]));
 	});
-var $elm$core$List$sortBy = _List_sortBy;
 var $elm$html$Html$Attributes$step = function (n) {
 	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
 };
+var $author$project$View$Task$renderRow = function (_v0) {
+	var id = _v0.a;
+	var name = _v0.b.name;
+	var description = _v0.b.description;
+	var assignedUserId = _v0.b.assignedUserId;
+	var isComplete = _v0.b.isComplete;
+	return A2(
+		$elm$html$Html$tr,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$String$fromInt(id))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(name)
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(description)
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						A2(
+							$elm$core$Maybe$withDefault,
+							'Not Assigned',
+							A2($elm$core$Maybe$map, $elm$core$String$fromInt, assignedUserId)))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						isComplete ? 'Yes' : 'No')
+					]))
+			]));
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $author$project$View$Task$tableView = function (rows) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('row mt-2')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('col-12')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$table,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('table')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$thead,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$th,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('border-top-0')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('ID')
+											])),
+										A2(
+										$elm$html$Html$th,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('border-top-0')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Name')
+											])),
+										A2(
+										$elm$html$Html$th,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('border-top-0')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Description')
+											])),
+										A2(
+										$elm$html$Html$th,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('border-top-0')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Assigned User Id')
+											])),
+										A2(
+										$elm$html$Html$th,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('border-top-0')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Is Complete')
+											]))
+									])),
+								A2(
+								$elm$html$Html$tbody,
+								_List_Nil,
+								A2(
+									$elm$core$List$map,
+									$author$project$View$Task$renderRow,
+									A2(
+										$elm$core$List$sortBy,
+										$elm$core$Tuple$first,
+										$elm$core$Dict$toList(rows))))
+							]))
+					]))
+			]));
+};
+var $author$project$View$User$renderCell = F2(
+	function (data, col) {
+		return A2(
+			$elm$html$Html$td,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					A2(
+						$elm$core$Maybe$withDefault,
+						'',
+						A2($elm$core$Dict$get, col, data)))
+				]));
+	});
+var $author$project$View$User$renderRow = F2(
+	function (headers, _v0) {
+		var id = _v0.a;
+		var data = _v0.b;
+		return A2(
+			$elm$html$Html$tr,
+			_List_Nil,
+			A2(
+				$elm$core$List$cons,
+				A2(
+					$elm$html$Html$td,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(id))
+						])),
+				A2(
+					$elm$core$List$map,
+					$author$project$View$User$renderCell(data),
+					headers)));
+	});
+var $author$project$View$User$tableView = F2(
+	function (headers, rows) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('row mt-2')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('col-12')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$table,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('table')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$thead,
+									_List_Nil,
+									A2(
+										$elm$core$List$cons,
+										A2(
+											$elm$html$Html$th,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('border-top-0')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('ID')
+												])),
+										A2(
+											$elm$core$List$map,
+											function (heading) {
+												return A2(
+													$elm$html$Html$th,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$class('border-top-0')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text(heading)
+														]));
+											},
+											headers))),
+									A2(
+									$elm$html$Html$tbody,
+									_List_Nil,
+									A2(
+										$elm$core$List$map,
+										$author$project$View$User$renderRow(headers),
+										A2(
+											$elm$core$List$sortBy,
+											$elm$core$Tuple$first,
+											$elm$core$Dict$toList(rows))))
+								]))
+						]))
+				]));
+	});
 var $author$project$Event$toUserHeaders = F2(
 	function (event, headers) {
 		switch (event.$) {
@@ -8306,7 +8535,7 @@ var $author$project$View$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('row mt-2')
+						$elm$html$Html$Attributes$class('nav nav-tabs')
 					]),
 				_List_fromArray(
 					[
@@ -8314,62 +8543,67 @@ var $author$project$View$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('col-12')
+								$elm$html$Html$Attributes$class('nav-item')
 							]),
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$h4,
-								_List_Nil,
+								$elm$html$Html$a,
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Current Values')
-									])),
-								A2(
-								$elm$html$Html$table,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('table')
+										$elm$html$Html$Attributes$class('nav-link pointer'),
+										$elm$html$Html$Attributes$classList(
+										_List_fromArray(
+											[
+												_Utils_Tuple2(
+												'active',
+												_Utils_eq(model.table, $author$project$Model$UserTable))
+											])),
+										$elm$html$Html$Events$onClick(
+										$author$project$Msg$SetTable($author$project$Model$UserTable))
 									]),
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$thead,
-										_List_Nil,
-										A2(
-											$elm$core$List$cons,
-											A2(
-												$elm$html$Html$th,
-												_List_Nil,
-												_List_fromArray(
-													[
-														$elm$html$Html$text('ID')
-													])),
-											A2(
-												$elm$core$List$map,
-												function (heading) {
-													return A2(
-														$elm$html$Html$th,
-														_List_Nil,
-														_List_fromArray(
-															[
-																$elm$html$Html$text(heading)
-															]));
-												},
-												userHeaders))),
-										A2(
-										$elm$html$Html$tbody,
-										_List_Nil,
-										A2(
-											$elm$core$List$map,
-											$author$project$View$renderRow(userHeaders),
-											A2(
-												$elm$core$List$sortBy,
-												$elm$core$Tuple$first,
-												$elm$core$Dict$toList(userRows))))
+										$elm$html$Html$text('User Table')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('nav-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$a,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('nav-link pointer'),
+										$elm$html$Html$Attributes$classList(
+										_List_fromArray(
+											[
+												_Utils_Tuple2(
+												'active',
+												_Utils_eq(model.table, $author$project$Model$TaskTable))
+											])),
+										$elm$html$Html$Events$onClick(
+										$author$project$Msg$SetTable($author$project$Model$TaskTable))
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Task Table')
 									]))
 							]))
-					]))
+					])),
+				function () {
+				var _v1 = model.table;
+				if (_v1.$ === 'UserTable') {
+					return A2($author$project$View$User$tableView, userHeaders, userRows);
+				} else {
+					return $author$project$View$Task$tableView(taskRows);
+				}
+			}()
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$sandbox(

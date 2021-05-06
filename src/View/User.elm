@@ -158,3 +158,48 @@ renderEditInputs (index, (key, val)) =
                 ]
             ]
         ]
+
+
+tableView : List String -> Dict Int (Dict String String) -> Html Msg
+tableView headers rows =
+    div
+        [ class "row mt-2" ]
+        [ div
+            [ class "col-12" ]
+            [ table
+                [ class "table" ]
+                [ thead
+                    []
+                    (th
+                        [ class "border-top-0" ]
+                        [ text "ID" ]
+                        :: List.map (\heading -> th [ class "border-top-0" ] [ text heading ]) headers
+                    )
+                , tbody
+                    []
+                    (rows
+                        |> Dict.toList
+                        |> List.sortBy Tuple.first
+                        |> List.map (renderRow headers)
+                    )
+                ]
+            ]
+        ]
+
+
+renderRow : List String -> ( Int, Dict String String ) -> Html Msg
+renderRow headers ( id, data ) =
+    tr
+        []
+        (td
+            []
+            [ text <| String.fromInt id ]
+            :: List.map (renderCell data) headers
+        )
+
+
+renderCell : Dict String String -> String -> Html Msg
+renderCell data col =
+    td
+        []
+        [ Dict.get col data |> Maybe.withDefault "" |> text ]

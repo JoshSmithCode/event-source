@@ -1,6 +1,6 @@
 module Msg exposing (..)
 
-import Model exposing (EditTab)
+import Model exposing (EditTab, Table)
 
 
 type Msg
@@ -25,4 +25,5 @@ type Msg
     | SubmitAssignUser
     | UpdatePosition String
     | SeedEvents
+    | SetTable Table
 

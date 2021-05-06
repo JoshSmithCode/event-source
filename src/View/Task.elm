@@ -172,3 +172,63 @@ rowToOption ( id, { name } ) =
         , onClick <| SelectEditTask id
         ]
         [ text name ]
+
+
+tableView : Dict Int TaskRow -> Html Msg
+tableView rows =
+    div
+        [ class "row mt-2" ]
+        [ div
+            [ class "col-12" ]
+            [ table
+                [ class "table" ]
+                [ thead
+                    []
+                    [ th
+                        [ class "border-top-0"]
+                        [ text "ID" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Name" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Description" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Assigned User Id" ]
+                    , th
+                        [ class "border-top-0"]
+                        [ text "Is Complete" ]
+                    ]
+                , tbody
+                    []
+                    (rows
+                        |> Dict.toList
+                        |> List.sortBy Tuple.first
+                        |> List.map renderRow
+                    )
+                ]
+            ]
+        ]
+
+
+renderRow : (Int, TaskRow) -> Html Msg
+renderRow ( id, { name, description, assignedUserId, isComplete }) =
+    tr
+        []
+        [ td
+            []
+            [ text <| String.fromInt id ]
+        , td
+            []
+            [ text name ]
+        , td
+            []
+            [ text description ]
+        , td
+            []
+            [ Maybe.map String.fromInt assignedUserId |> Maybe.withDefault "Not Assigned" |> text ]
+        , td
+            []
+            [ text <| if isComplete then "Yes" else "No" ]
+        ]

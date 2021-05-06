@@ -175,3 +175,6 @@ update msg model =
                 events = Event.seedEvents
             in
             { model | events = events, position = Array.length events + 1 }
+
+        SetTable table ->
+            { model | table = table }

@@ -6,7 +6,7 @@ import Event exposing (Event)
 import Html exposing (..)
 import Html.Attributes as Attributes exposing (..)
 import Html.Events exposing (..)
-import Model exposing (EditTab(..), Model)
+import Model exposing (EditTab(..), Model, Table(..))
 import Msg exposing (Msg(..))
 import Set exposing (Set)
 import View.Task as Task
@@ -116,53 +116,35 @@ view model =
             []
             []
         , div
-            [ class "row mt-2" ]
+            [ class "nav nav-tabs" ]
             [ div
-                [ class "col-12" ]
-                [ h4
-                    []
-                    [ text "Current Values" ]
-                , table
-                    [ class "table" ]
-                    [ thead
-                        []
-                        (th
-                            []
-                            [ text "ID" ]
-                            :: List.map (\heading -> th [] [ text heading ]) userHeaders
-                        )
-                    , tbody
-                        []
-                        (userRows
-                            |> Dict.toList
-                            |> List.sortBy Tuple.first
-                            |> List.map (renderRow userHeaders)
-                        )
+                [ class "nav-item" ]
+                [ a
+                    [ class "nav-link pointer"
+                    , classList [("active", model.table == UserTable)]
+                    , onClick <| SetTable UserTable
                     ]
+                    [ text "User Table" ]
+                ]
+            , div
+                [ class "nav-item" ]
+                [ a
+                    [ class "nav-link pointer"
+                    , classList [("active", model.table == TaskTable)]
+                    , onClick <| SetTable TaskTable
+                    ]
+                    [ text "Task Table" ]
                 ]
             ]
-        ]
+        , (
+            case model.table of
+                UserTable ->
+                    User.tableView userHeaders userRows
 
-
-
-
-
-renderRow : List String -> ( Int, Dict String String ) -> Html Msg
-renderRow headers ( id, data ) =
-    tr
-        []
-        (td
-            []
-            [ text <| String.fromInt id ]
-            :: List.map (renderCell data) headers
+                TaskTable ->
+                    Task.tableView taskRows
         )
-
-
-renderCell : Dict String String -> String -> Html Msg
-renderCell data col =
-    td
-        []
-        [ Dict.get col data |> Maybe.withDefault "" |> text ]
+        ]
 
 
 showEvent : Set Int -> Int -> Event -> Html Msg
