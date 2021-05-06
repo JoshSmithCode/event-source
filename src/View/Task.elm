@@ -177,11 +177,11 @@ rowToOption ( id, { name } ) =
 tableView : Dict Int TaskRow -> Html Msg
 tableView rows =
     div
-        [ class "row mt-2" ]
+        [ class "row" ]
         [ div
             [ class "col-12" ]
             [ table
-                [ class "table" ]
+                [ class "table table-bordered table-sm border-top-0" ]
                 [ thead
                     []
                     [ th

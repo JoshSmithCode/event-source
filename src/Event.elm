@@ -50,7 +50,7 @@ renderBody event =
 
         UpdateUser id body ->
             table
-                [ class "table" ]
+                [ class "table table-bordered table-sm border-top-0" ]
                 [ tbody
                     []
                     [ th
@@ -88,7 +88,7 @@ renderBody event =
                     [ text <| String.fromInt id ]
                 , div
                     [ class "col-6" ]
-                    [ text "name" ]
+                    [ text "description" ]
                 , div
                     [ class "col-6" ]
                     [ text description ]

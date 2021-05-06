@@ -108,16 +108,13 @@ renderEdit editingData row =
                     [ div
                         [ class "row" ]
                         [ div
-                            [ class "offset-6 col-3" ]
+                            [ class "offset-6 col-6 d-flex justify-content-end mt-2" ]
                             [ div
-                                [ class "btn btn-info"
+                                [ class "btn btn-info mr-2"
                                 , onClick AddEditingRow
                                 ]
                                 [ text "Add Row" ]
-                            ]
-                        , div
-                            [ class "col-3" ]
-                            [ div
+                            , div
                                 [ class "btn btn-success"
                                 , onClick SubmitEditUser
                                 ]
@@ -133,7 +130,7 @@ renderEdit editingData row =
 renderEditInputs : (Int, (String, String)) -> Html Msg
 renderEditInputs (index, (key, val)) =
     div
-        [ class "col-12" ]
+        [ class "col-12 mt-2" ]
         [ div
             [ class "row" ]
             [ div
@@ -163,11 +160,11 @@ renderEditInputs (index, (key, val)) =
 tableView : List String -> Dict Int (Dict String String) -> Html Msg
 tableView headers rows =
     div
-        [ class "row mt-2" ]
+        [ class "row" ]
         [ div
             [ class "col-12" ]
             [ table
-                [ class "table" ]
+                [ class "table table-bordered table-sm border-top-0" ]
                 [ thead
                     []
                     (th

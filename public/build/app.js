@@ -7337,7 +7337,7 @@ var $author$project$View$User$renderEditInputs = function (_v0) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('col-12')
+				$elm$html$Html$Attributes$class('col-12 mt-2')
 			]),
 		_List_fromArray(
 			[
@@ -7518,7 +7518,7 @@ var $author$project$View$User$renderEdit = F2(
 													$elm$html$Html$div,
 													_List_fromArray(
 														[
-															$elm$html$Html$Attributes$class('offset-6 col-3')
+															$elm$html$Html$Attributes$class('offset-6 col-6 d-flex justify-content-end mt-2')
 														]),
 													_List_fromArray(
 														[
@@ -7526,22 +7526,13 @@ var $author$project$View$User$renderEdit = F2(
 															$elm$html$Html$div,
 															_List_fromArray(
 																[
-																	$elm$html$Html$Attributes$class('btn btn-info'),
+																	$elm$html$Html$Attributes$class('btn btn-info mr-2'),
 																	$elm$html$Html$Events$onClick($author$project$Msg$AddEditingRow)
 																]),
 															_List_fromArray(
 																[
 																	$elm$html$Html$text('Add Row')
-																]))
-														])),
-													A2(
-													$elm$html$Html$div,
-													_List_fromArray(
-														[
-															$elm$html$Html$Attributes$class('col-3')
-														]),
-													_List_fromArray(
-														[
+																])),
 															A2(
 															$elm$html$Html$div,
 															_List_fromArray(
@@ -7599,6 +7590,7 @@ var $author$project$View$User$editForm = F3(
 							maybeUserId)))
 				]));
 	});
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
@@ -7804,7 +7796,7 @@ var $author$project$View$productivityTableView = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('row mt-2')
+					$elm$html$Html$Attributes$class('row')
 				]),
 			_List_fromArray(
 				[
@@ -7820,7 +7812,7 @@ var $author$project$View$productivityTableView = F2(
 							$elm$html$Html$table,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('table')
+									$elm$html$Html$Attributes$class('table table-bordered table-sm border-top-0')
 								]),
 							_List_fromArray(
 								[
@@ -7974,7 +7966,7 @@ var $author$project$Event$renderBody = function (event) {
 				$elm$html$Html$table,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('table')
+						$elm$html$Html$Attributes$class('table table-bordered table-sm border-top-0')
 					]),
 				_List_fromArray(
 					[
@@ -8079,7 +8071,7 @@ var $author$project$Event$renderBody = function (event) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('name')
+								$elm$html$Html$text('description')
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -8323,7 +8315,7 @@ var $author$project$View$Task$tableView = function (rows) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('row mt-2')
+				$elm$html$Html$Attributes$class('row')
 			]),
 		_List_fromArray(
 			[
@@ -8339,7 +8331,7 @@ var $author$project$View$Task$tableView = function (rows) {
 						$elm$html$Html$table,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('table')
+								$elm$html$Html$Attributes$class('table table-bordered table-sm border-top-0')
 							]),
 						_List_fromArray(
 							[
@@ -8455,7 +8447,7 @@ var $author$project$View$User$tableView = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('row mt-2')
+					$elm$html$Html$Attributes$class('row')
 				]),
 			_List_fromArray(
 				[
@@ -8471,7 +8463,7 @@ var $author$project$View$User$tableView = F2(
 							$elm$html$Html$table,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('table')
+									$elm$html$Html$Attributes$class('table table-bordered table-sm border-top-0')
 								]),
 							_List_fromArray(
 								[
@@ -8574,18 +8566,22 @@ var $author$project$View$view = function (model) {
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$div,
+								$elm$html$Html$h3,
+								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('btn btn-success'),
-										$elm$html$Html$Events$onClick($author$project$Msg$SeedEvents)
-									]),
+										$elm$html$Html$text('Event Sourcing Demo')
+									])),
+								A2(
+								$elm$html$Html$p,
+								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Seed')
+										$elm$html$Html$text('This demo exists as a simple example of the possibilities of event sourcing. Using the forms below you can create events, then in the tables underneath you can see how we\'re able to create different \'tables\' or \'visualisations\' of your events. There\'s also a handy time-traveller that will allow you to move forward and backwards through events to watch how your data has changed over time.')
 									]))
 							]))
 					])),
+				A2($elm$html$Html$hr, _List_Nil, _List_Nil),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -8598,7 +8594,56 @@ var $author$project$View$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('col-5')
+								$elm$html$Html$Attributes$class('col-10 d-flex align-items-center')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$p,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('mb-0')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Don\'t have a lot of time to spend creating your own events? Just hit this seed button to generate some data to play with.')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-2')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('btn btn-success'),
+										$elm$html$Html$Events$onClick($author$project$Msg$SeedEvents)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Seed')
+									]))
+							]))
+					])),
+				A2($elm$html$Html$hr, _List_Nil, _List_Nil),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('row')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('col-md-5')
 							]),
 						_List_fromArray(
 							[
@@ -8609,7 +8654,7 @@ var $author$project$View$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('col-7 list-group mt-4 event-log')
+								$elm$html$Html$Attributes$class('col-md-7 list-group mt-4 event-log')
 							]),
 						A2(
 							$elm$core$List$cons,

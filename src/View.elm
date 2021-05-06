@@ -32,6 +32,27 @@ view model =
             [ class "row" ]
             [ div
                 [ class "col-12" ]
+                [ h3
+                    []
+                    [ text "Event Sourcing Demo" ]
+                , p
+                    []
+                    [ text "This demo exists as a simple example of the possibilities of event sourcing. Using the forms below you can create events, then in the tables underneath you can see how we're able to create different 'tables' or 'visualisations' of your events. There's also a handy time-traveller that will allow you to move forward and backwards through events to watch how your data has changed over time." ]
+                ]
+            ]
+        , hr
+            []
+            []
+        , div
+            [ class "row" ]
+            [ div
+                [ class "col-10 d-flex align-items-center" ]
+                [ p
+                    [ class "mb-0" ]
+                    [ text "Don't have a lot of time to spend creating your own events? Just hit this seed button to generate some data to play with." ]
+                ]
+            , div
+                [ class "col-2" ]
                 [ div
                     [ class "btn btn-success"
                     , onClick SeedEvents
@@ -39,15 +60,18 @@ view model =
                     [ text "Seed" ]
                 ]
             ]
+        , hr
+            []
+            []
         , div
             [ class "row" ]
             [ div
-                [ class "col-5" ]
+                [ class "col-md-5" ]
                 [ User.createForm model.createUserValue
                 , Task.createForm model.createTaskValue
                 ]
             , div
-                [ class "col-7 list-group mt-4 event-log" ]
+                [ class "col-md-7 list-group mt-4 event-log" ]
                 (div
                     [ class "list-group-item list-group-item-primary sticky-top"
                     ]
@@ -165,11 +189,11 @@ productivityTableView position events =
         rows = Event.toCurrentProductivityRows position events
     in
     div
-        [ class "row mt-2" ]
+        [ class "row" ]
         [ div
             [ class "col-12" ]
             [ table
-                [ class "table" ]
+                [ class "table table-bordered table-sm border-top-0" ]
                 [ thead
                     []
                     [ th
