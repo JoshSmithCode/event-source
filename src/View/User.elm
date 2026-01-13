@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Msg exposing (Msg(..))
+import Json.Decode as Decode
 
 
 createForm : String -> Html Msg
@@ -52,7 +53,9 @@ editUserSelect rows =
     div
         [ class "col-12" ]
         [ select
-            [ class "form-control" ]
+            [ class "form-control"
+            , on "change" <| Decode.map (String.toInt >> Maybe.withDefault 0 >> SelectEditUser) Html.Events.targetValue 
+            ]
             (option
                 []
                 [ text "-- Please Select --" ]
@@ -64,9 +67,7 @@ editUserSelect rows =
 rowToOption : ( Int, Dict String String ) -> Html Msg
 rowToOption ( id, data ) =
     option
-        -- @todo - should probably do this properly with a decoder,
-        --         but this will work for now.
-        [ onClick <| SelectEditUser id ]
+        [ value <| String.fromInt id ]
         [ Dict.get "name" data |> Maybe.withDefault "Name Not Found" |> text ]
 
 
