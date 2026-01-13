@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Msg exposing (Msg(..))
-
+import Json.Decode as Decode
 
 createForm : String -> Html Msg
 createForm createTaskValue =
@@ -115,7 +115,9 @@ assignForm assignedUserId userRows =
                     []
                     [ strong [] [text "Assign User" ] ]
                 , select
-                    [ class "form-control" ]
+                    [ class "form-control" 
+                    , on "change" <| Decode.map (String.toInt >> Maybe.withDefault 0 >> SelectAssignUser) Html.Events.targetValue 
+                    ]
                     ( option
                         []
                         [ text "-- Please Select --" ]
@@ -147,7 +149,7 @@ assignForm assignedUserId userRows =
 userOption : ( Int, Dict String String ) -> Html Msg
 userOption ( id, data ) =
     option
-        [ onClick <| SelectAssignUser id ]
+        [ value <| String.fromInt id ]
         [ Dict.get "name" data |> Maybe.withDefault "Name Not Found" |> text ]
 
 
@@ -156,7 +158,9 @@ editTaskSelect rows =
     div
         [ class "col-12" ]
         [ select
-            [ class "form-control" ]
+            [ class "form-control" 
+            , on "change" <| Decode.map (String.toInt >> Maybe.withDefault 0 >> SelectEditTask) Html.Events.targetValue 
+            ]
             (option
                 []
                 [ text "-- Please Select --" ]
@@ -168,9 +172,7 @@ editTaskSelect rows =
 rowToOption : ( Int, TaskRow ) -> Html Msg
 rowToOption ( id, { name } ) =
     option
-        [ value <| String.fromInt id
-        , onClick <| SelectEditTask id
-        ]
+        [ value <| String.fromInt id ]
         [ text name ]
 
 
