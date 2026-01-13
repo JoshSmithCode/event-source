@@ -6904,10 +6904,15 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$html$Html$option = _VirtualDom_node('option');
 var $author$project$Msg$SelectEditTask = function (a) {
 	return {$: 'SelectEditTask', a: a};
 };
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$html$Html$option = _VirtualDom_node('option');
 var $author$project$View$Task$rowToOption = function (_v0) {
 	var id = _v0.a;
 	var name = _v0.b.name;
@@ -6916,9 +6921,7 @@ var $author$project$View$Task$rowToOption = function (_v0) {
 		_List_fromArray(
 			[
 				$elm$html$Html$Attributes$value(
-				$elm$core$String$fromInt(id)),
-				$elm$html$Html$Events$onClick(
-				$author$project$Msg$SelectEditTask(id))
+				$elm$core$String$fromInt(id))
 			]),
 		_List_fromArray(
 			[
@@ -6939,7 +6942,20 @@ var $author$project$View$Task$editTaskSelect = function (rows) {
 				$elm$html$Html$select,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('form-control')
+						$elm$html$Html$Attributes$class('form-control'),
+						A2(
+						$elm$html$Html$Events$on,
+						'change',
+						A2(
+							$elm$json$Json$Decode$map,
+							A2(
+								$elm$core$Basics$composeR,
+								$elm$core$String$toInt,
+								A2(
+									$elm$core$Basics$composeR,
+									$elm$core$Maybe$withDefault(0),
+									$author$project$Msg$SelectEditTask)),
+							$elm$html$Html$Events$targetValue))
 					]),
 				A2(
 					$elm$core$List$cons,
@@ -6958,12 +6974,12 @@ var $author$project$View$Task$editTaskSelect = function (rows) {
 };
 var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $author$project$Msg$CancelEditingTask = {$: 'CancelEditingTask'};
-var $author$project$Msg$SubmitAssignUser = {$: 'SubmitAssignUser'};
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$html$Html$strong = _VirtualDom_node('strong');
 var $author$project$Msg$SelectAssignUser = function (a) {
 	return {$: 'SelectAssignUser', a: a};
 };
+var $author$project$Msg$SubmitAssignUser = {$: 'SubmitAssignUser'};
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$html$Html$strong = _VirtualDom_node('strong');
 var $author$project$View$Task$userOption = function (_v0) {
 	var id = _v0.a;
 	var data = _v0.b;
@@ -6971,8 +6987,8 @@ var $author$project$View$Task$userOption = function (_v0) {
 		$elm$html$Html$option,
 		_List_fromArray(
 			[
-				$elm$html$Html$Events$onClick(
-				$author$project$Msg$SelectAssignUser(id))
+				$elm$html$Html$Attributes$value(
+				$elm$core$String$fromInt(id))
 			]),
 		_List_fromArray(
 			[
@@ -7011,7 +7027,20 @@ var $author$project$View$Task$assignForm = F2(
 						$elm$html$Html$select,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('form-control')
+								$elm$html$Html$Attributes$class('form-control'),
+								A2(
+								$elm$html$Html$Events$on,
+								'change',
+								A2(
+									$elm$json$Json$Decode$map,
+									A2(
+										$elm$core$Basics$composeR,
+										$elm$core$String$toInt,
+										A2(
+											$elm$core$Basics$composeR,
+											$elm$core$Maybe$withDefault(0),
+											$author$project$Msg$SelectAssignUser)),
+									$elm$html$Html$Events$targetValue))
 							]),
 						A2(
 							$elm$core$List$cons,
@@ -7275,8 +7304,8 @@ var $author$project$View$User$rowToOption = function (_v0) {
 		$elm$html$Html$option,
 		_List_fromArray(
 			[
-				$elm$html$Html$Events$onClick(
-				$author$project$Msg$SelectEditUser(id))
+				$elm$html$Html$Attributes$value(
+				$elm$core$String$fromInt(id))
 			]),
 		_List_fromArray(
 			[
@@ -7300,7 +7329,20 @@ var $author$project$View$User$editUserSelect = function (rows) {
 				$elm$html$Html$select,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('form-control')
+						$elm$html$Html$Attributes$class('form-control'),
+						A2(
+						$elm$html$Html$Events$on,
+						'change',
+						A2(
+							$elm$json$Json$Decode$map,
+							A2(
+								$elm$core$Basics$composeR,
+								$elm$core$String$toInt,
+								A2(
+									$elm$core$Basics$composeR,
+									$elm$core$Maybe$withDefault(0),
+									$author$project$Msg$SelectEditUser)),
+							$elm$html$Html$Events$targetValue))
 					]),
 				A2(
 					$elm$core$List$cons,
